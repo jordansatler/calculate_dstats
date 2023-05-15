@@ -18,10 +18,20 @@ def read_data(file):
 def get_taxa_combinations(tr, OG, taxa):
     """get all test combinations ordered by phylogeny"""
     tree = Tree(tr)
+
+    # check if outgroup is in tree
+    if not OG in tree.get_leaf_names():
+        print("OUTGROUP is not in tree. Please provide outgroup species.\n")
+        print("SAMPLED TAXA: {0}".format(', '.join(i for i in 
+                                                   sorted(tree.get_leaf_names()))))
+        sys.exit()
+    
+    # get all combinations of 3 ingroup taxa
     tree.set_outgroup(OG)
     ingroup = [i for i in taxa if not i == OG]
     sp_sets = list(combinations(ingroup, 3))
 
+    # order 3 ingroup taxa + outgroup by phylogeny
     res = []
     for sp in sp_sets:
         taxa_set = [t for t in sp]
@@ -36,7 +46,7 @@ def get_taxa_combinations(tr, OG, taxa):
 def get_valid_snps(data, taxon_set):
     """retain snps that match ABBA/BABA pattern"""
     snps = []
-    t = [data[i] for i in taxon_set]
+    t = [data[i].upper() for i in taxon_set]
     allowed = ['A', 'C', 'G', 'T']
     for i in range(len(t[0])):
         snp = [ind[i] for ind in t]
