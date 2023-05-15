@@ -1,6 +1,9 @@
 """Calculate D-statistics (ABBA/BABA) for four taxon trees.
+Assumes SNPs are unlinked and in phylip format. Also requires
+a phylogeny and a taxon designated as the outgroup. Script uses
+1000 bootstrap replicates to test significance of D-stat patterns. 
 
-usage: python dstats.py dataSNPs.file tree.file outgroup
+usage: python dstats.py snps.file tree.file outgroup
 """
 import sys
 import random
@@ -111,7 +114,7 @@ def summarize_significant_results(res):
 
 def main():
     if len(sys.argv) != 4:
-        print("python dstats.py dataSNPs.file tree.file outgroup")
+        print("python dstats.py snps.file tree.file outgroup")
         sys.exit()
     
     data = read_data(sys.argv[1])
