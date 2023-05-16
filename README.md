@@ -7,7 +7,7 @@ User needs to provide a snps data file, a tree file, and the name of the outgrou
 
 usage:  
 ```python
-    python dstats.py snps.file tree.file outgroup
+    python dstats.py --data snps.file --tree tree.file --outgroup outgroup
 ```
 
 ***
