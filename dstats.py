@@ -3,10 +3,11 @@ Assumes SNPs are unlinked and in phylip format. Also requires
 a phylogeny and a taxon designated as the outgroup. Script uses
 1000 bootstrap replicates to test significance of D-stat patterns. 
 
-usage: python dstats.py snps.file tree.file outgroup
+usage: python dstats.py --data snps.file --tree tree.file --outgroup outgroup
 """
 import sys
 import random
+import argparse
 import datetime
 import numpy as np
 from ete3 import Tree
@@ -112,13 +113,34 @@ def summarize_significant_results(res):
         for k, v in sum_res_sort.items():
             out.write("{0}\t{1}\n".format(k, v))
 
-def main():
-    if len(sys.argv) != 4:
-        print("python dstats.py snps.file tree.file outgroup")
-        sys.exit()
+def get_args():
+    """get arguments"""
+    parser = argparse.ArgumentParser(description = "Options for running dstats.py",
+                                     add_help = True)
+    parser.add_argument("-D",
+                        "--data",
+                        required=True,
+                        type=str,
+                        help="SNP data file with path")
     
-    data = read_data(sys.argv[1])
-    taxa_set = get_taxa_combinations(sys.argv[2], sys.argv[3], data.keys())
+    parser.add_argument("-T",
+                        "--tree",
+                        required=True,
+                        type=str,
+                        help="Tree file with path")
+    
+    parser.add_argument("-OG",
+                        "--outgroup",
+                        required=True,
+                        type=str,
+                        help="""Taxon designated as outgroup""")
+    
+    return parser.parse_args()
+
+def main():
+    args = get_args()
+    data = read_data(args.data)
+    taxa_set = get_taxa_combinations(args.tree, args.outgroup, data.keys())
     
     # keep track of time
     begin_time = datetime.datetime.now()
